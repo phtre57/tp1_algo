@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <limits>
 #include <assert.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -16,6 +17,7 @@ Noeud Arbre::construire_noeud(const vector<const Point*>& points) {
     unsigned long n = points.size();
     vector<const Point*> b_points;
     vector<const Point*> c_points;
+    Noeud racine = Noeud();
 
     if (n > 1){
         for (unsigned long i = 0; i < n; i++){
@@ -27,11 +29,15 @@ Noeud Arbre::construire_noeud(const vector<const Point*>& points) {
             }
         }
 
-        this->construire_noeud(b_points);
-        this->construire_noeud(c_points);
+        racine.enfantGauche = make_unique<Noeud>(this->construire_noeud(b_points));
+        racine.enfantDroit = make_unique<Noeud>(this->construire_noeud(c_points));
+        this->fusion(racine);
+    }
+    else{
+        return Noeud(points.at(0));
     }
 
-    return Noeud();
+    return racine;
 
 }
 
@@ -49,7 +55,44 @@ Noeud Arbre::construire_noeud(const vector<const Point*>& points) {
 void Arbre::fusion(Noeud& parent) {
     // Insérer votre code ici
 
+    parent.x = parent.enfantGauche->x;
+    parent.xMax = parent.enfantDroit->xMax;
 
+    for (int i = 0; i < parent.enfantDroit->valeursY.size(); i++){
+        parent.valeursY.push_back(parent.enfantDroit->valeursY[i]);
+    }
+
+    for (int i = 0; i < parent.enfantGauche->valeursY.size(); i++){
+        parent.valeursY.push_back(parent.enfantGauche->valeursY[i]);
+    }
+
+    std::sort(parent.valeursY.begin(), parent.valeursY.end()); //nlog(n)
+
+    for (unsigned long i = 0; i < parent.valeursY.size(); i++){
+        int temp = -1;
+
+        for (unsigned long j = 0; j < parent.enfantGauche->valeursY.size(); j++){
+            if (parent.enfantGauche->valeursY.at(j) <= parent.valeursY.at(i)){
+                temp = j;
+                break;
+            }
+        }
+
+        parent.pointeursGauche.push_back(temp);
+    }
+
+    for (unsigned long i = 0; i < parent.valeursY.size(); i++){
+        long temp = -1;
+
+        for (unsigned long j = 0; j < parent.enfantDroit->valeursY.size(); j++){
+            if (parent.enfantDroit->valeursY.at(j) <= parent.valeursY.at(i)){
+                temp = j;
+                break;
+            }
+        }
+
+        parent.pointeursDroite.push_back(temp);
+    }
 
     // Le code qui suit est composé de post-conditions que la méthode fusion doit respecter pour
     // construire l'arbre correctement.

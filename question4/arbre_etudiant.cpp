@@ -12,6 +12,27 @@ using namespace std;
 // Diviser pour régner pour faire cette méthode. Vous pouvez vous inspirer de l'algorithme de tri fusion.
 Noeud Arbre::construire_noeud(const vector<const Point*>& points) {
     // Insérez votre code ici.
+
+    unsigned long n = points.size();
+    vector<const Point*> b_points;
+    vector<const Point*> c_points;
+
+    if (n > 1){
+        for (unsigned long i = 0; i < n; i++){
+            if (i <= (n / 2) - 1){
+                b_points.push_back(points.at(i));
+            }
+            else{
+                c_points.push_back(points.at(i));
+            }
+        }
+
+        this->construire_noeud(b_points);
+        this->construire_noeud(c_points);
+    }
+
+    return Noeud();
+
 }
 
 // La méthode fusion doit initialiser les vecteurs de parent en se basant parent.enfantGauche et parent.enfantDroit.

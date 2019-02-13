@@ -136,10 +136,11 @@ int main(int argc, char** argv) {
     // Si vous voulez afficher la trace de l'arbre généré pour un des tests, passez true en paramètre à la fonction.
 
     test_arbre_simple(true);
-    test_4_points(true);
-    test_5_points(false);
-    test_8_points(false);
-    test_immense();
+    //test_4_points(false);
+    //test_5_points(false);
+    //test_8_points(false);
+    //test_immense();
+
 
     return 0;
 }

@@ -80,7 +80,7 @@ bool test(const vector<Point>& points, const Arbre& arbre, const string& nom, bo
 
     if (trace)
         cout << arbre;
-    /*
+
     bool pass = test_toutes_requetes(arbre, points);
 
     if (pass) {
@@ -89,9 +89,8 @@ bool test(const vector<Point>& points, const Arbre& arbre, const string& nom, bo
         cout << "+0 point, le test a échoué.";
     }
     cout << endl << endl;
-     */
 
-    return true;
+    return pass;
 }
 
 void test_arbre_simple(bool trace) {
@@ -141,7 +140,7 @@ int main(int argc, char** argv) {
     test_4_points(true);
     test_5_points(true);
     test_8_points(true);
-    //test_immense();
+    test_immense();
 
 
     return 0;

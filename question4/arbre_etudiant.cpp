@@ -17,7 +17,7 @@ Noeud Arbre::construire_noeud(const vector<const Point*>& points) {
     unsigned long n = points.size();
     vector<const Point*> b_points;
     vector<const Point*> c_points;
-    Noeud racine = Noeud();
+    Noeud current_node;
 
     if (n > 1){
         for (unsigned long i = 0; i < n; i++){
@@ -29,15 +29,15 @@ Noeud Arbre::construire_noeud(const vector<const Point*>& points) {
             }
         }
 
-        racine.enfantGauche = make_unique<Noeud>(this->construire_noeud(b_points));
-        racine.enfantDroit = make_unique<Noeud>(this->construire_noeud(c_points));
-        this->fusion(racine);
+        current_node.enfantGauche = make_unique<Noeud>(this->construire_noeud(b_points));
+        current_node.enfantDroit = make_unique<Noeud>(this->construire_noeud(c_points));
+        this->fusion(current_node);
     }
     else{
         return Noeud(points.at(0));
     }
 
-    return racine;
+    return current_node;
 
 }
 
@@ -121,5 +121,16 @@ vector<const Point*> Arbre::requete(int chi, int gamma) const {
 
     const Noeud* courant = racine.get();
 
-    // Insérer votre code ici.
+    // Insérer votre code ici
+
+    while (indexY != -1){
+        if (courant->x <= chi){
+            rapporter(courant->enfantGauche.get(), indexY, resultats);
+        }
+
+        indexY = courant->pointeursDroite[indexY];
+        courant = courant->enfantDroit.get();
+    }
+
+    return resultats;
 }

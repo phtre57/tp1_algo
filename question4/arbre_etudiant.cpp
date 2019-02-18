@@ -55,7 +55,7 @@ Noeud Arbre::construire_noeud(const vector<const Point*>& points) {
 void Arbre::fusion(Noeud& parent) {
     // Insérer votre code ici
 
-    parent.x = parent.enfantGauche->x;
+    parent.x = parent.enfantGauche->xMax;
     parent.xMax = parent.enfantDroit->xMax;
 
     for (int i = 0; i < parent.enfantDroit->valeursY.size(); i++){
@@ -74,7 +74,6 @@ void Arbre::fusion(Noeud& parent) {
         for (unsigned long j = 0; j < parent.enfantGauche->valeursY.size(); j++){
             if (parent.enfantGauche->valeursY.at(j) <= parent.valeursY.at(i)){
                 temp = j;
-                break;
             }
         }
 
@@ -87,7 +86,6 @@ void Arbre::fusion(Noeud& parent) {
         for (unsigned long j = 0; j < parent.enfantDroit->valeursY.size(); j++){
             if (parent.enfantDroit->valeursY.at(j) <= parent.valeursY.at(i)){
                 temp = j;
-                break;
             }
         }
 
@@ -124,12 +122,20 @@ vector<const Point*> Arbre::requete(int chi, int gamma) const {
     // Insérer votre code ici
 
     while (indexY != -1){
-        if (courant->x <= chi){
-            rapporter(courant->enfantGauche.get(), indexY, resultats);
+        if (courant->xMax <= chi){
+            rapporter(courant->enfantGauche.get(), courant->pointeursGauche.at(indexY), resultats);
+            rapporter(courant->enfantDroit.get(), courant->pointeursDroite.at(indexY), resultats);
+            indexY = -1;
         }
-
-        indexY = courant->pointeursDroite[indexY];
-        courant = courant->enfantDroit.get();
+        else if (courant->x <= chi){
+            rapporter(courant->enfantGauche.get(), courant->pointeursGauche.at(indexY), resultats);
+            indexY = courant->pointeursDroite.at(indexY);
+            courant = courant->enfantDroit.get();
+        }
+        else{
+            indexY = courant->pointeursGauche.at(indexY);
+            courant = courant->enfantGauche.get();
+        }
     }
 
     return resultats;
